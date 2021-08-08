@@ -5,8 +5,10 @@ import { config } from '../config/index.js';
 import morgan from 'morgan';
 import { AppError } from '../utils/AppError.js';
 import { globalErrorHandler } from '../api/controllers/errorController.js';
+import helmet from 'helmet';
 
 export const initExpress = ({ app }) => {
+  app.use(helmet());
   // Useful if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   // It shows the real origin IP in the heroku or Cloudwatch logs
   app.enable('trust proxy');
@@ -14,6 +16,7 @@ export const initExpress = ({ app }) => {
   // Alternate description:
   // Enable Cross Origin Resource Sharing to all origins by default
   app.use(cors());
+  // cors({ origin: clientOrigins })
 
   // Development Logging
   if (process.env.NODE_ENV === 'development') {
