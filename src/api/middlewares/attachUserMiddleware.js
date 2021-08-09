@@ -12,6 +12,8 @@ export const attachUserMiddleware = catchAsync(async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
       const { data } = await getUserDetails(token);
       req.user = data;
+      const userId = req.user.sub.split('|')[1];
+      req.user.userId = userId;
       next();
     } catch (error) {
       next(new AppError('No Token found', 404));

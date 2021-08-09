@@ -1,11 +1,12 @@
-import axios from 'axios';
-import { AppError } from '../../utils/AppError.js';
-import { getUserDetails } from '../../utils/auth0.js';
 import { catchAsync } from '../../utils/catchAsync.js';
+import { Task } from '../../models/Task.js';
+import { AppError } from '../../utils/AppError.js';
+import { User } from '../../models/User.js';
 
 export const getAllTasks = catchAsync(async (req, res, next) => {
-  console.log(req.user);
-  return res.status(200).json({ status: 'Success get All Tasks' });
+  const tasks = await Task.find({ author: req.user.userId });
+  await User.populate(tasks, { path: 'author', select: 'email _id' });
+  return res.status(200).json({ status: 'success', tasks });
 });
 
 export const getTaskById = (req, res) => {
@@ -13,9 +14,11 @@ export const getTaskById = (req, res) => {
   return res.status(200).json({ status: 'success' });
 };
 
-export const createTask = (req, res) => {
-  console.log(req.params);
+export const createTask = catchAsync(async (req, res) => {
+  const newTask = await Task.create({ ...req.body, author: req.user.userId });
+
   return res.status(200).json({
     status: 'success',
+    task: newTask,
   });
-};
+});
