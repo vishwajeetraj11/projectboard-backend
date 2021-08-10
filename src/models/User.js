@@ -1,6 +1,15 @@
 import mongoose from 'mongoose';
 
 const userSchema = mongoose.Schema({
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  username: {
+    type: String,
+  },
   email: {
     type: String,
     required: true,
@@ -13,6 +22,9 @@ const userSchema = mongoose.Schema({
   email_verified: {
     type: String,
     default: 'No Description',
+  },
+  photo: {
+    type: String,
   },
 });
 

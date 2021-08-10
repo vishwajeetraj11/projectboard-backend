@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { projectRouter, taskRouter } from '../api/index.js';
+import { projectRouter, taskRouter, userRoutes } from '../api/index.js';
 import { config } from '../config/index.js';
 import morgan from 'morgan';
 import { AppError } from '../utils/AppError.js';
@@ -28,6 +28,7 @@ export const initExpress = ({ app }) => {
   // Load API routes
   app.use(`${config.api.prefix}/tasks`, taskRouter);
   app.use(`${config.api.prefix}/projects`, projectRouter);
+  app.use(`${config.api.prefix}/users`, userRoutes);
 
   // all runs for all http methods
   app.all('*', (req, res, next) => {
