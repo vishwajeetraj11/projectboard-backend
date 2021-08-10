@@ -1,8 +1,15 @@
+import { Project } from '../../models/Project.js';
 import { catchAsync } from '../../utils/catchAsync.js';
 
-export const getAllProjects = (req, res) => {
-  return res.status(200).json({ status: 'Success get All Tasks' });
-};
+export const getAllProjects = catchAsync(async (req, res) => {
+  const { scope } = req.query;
+  const filterObj = {};
+  if (scope === 'admin') {
+    filterObj.admin = req.user.userId;
+  }
+  const projects = await Project.find(filterObj);
+  return res.status(200).json({ status: 'success', projects });
+});
 
 export const getProjectById = (req, res) => {
   // console.log(req.params);
@@ -11,15 +18,12 @@ export const getProjectById = (req, res) => {
 
 export const createProject = catchAsync(async (req, res) => {
   const { title, description } = req.body;
-  const admin = {
-    user: req.user.userId,
-    access: 'admin',
-  };
   const newProject = await Project.create({
     title,
     description,
-    members: [admin],
+    admin: req.user.userId,
   });
+  // const member = await
   return res.status(200).json({
     status: 'success',
     task: newProject,

@@ -11,11 +11,6 @@ const memberSchema = mongoose.Schema({
     required: true,
     ref: 'User',
   },
-  access: {
-    required: true,
-    enum: ['user', 'admin'],
-    default: 'user',
-  },
 });
 
 export const Member = mongoose.model('Member', memberSchema);

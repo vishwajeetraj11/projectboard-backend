@@ -8,7 +8,11 @@ const projectSchema = mongoose.Schema({
   description: {
     type: String,
     required: true,
-    select: false,
+  },
+  admin: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
 });
 
