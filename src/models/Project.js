@@ -10,20 +10,6 @@ const projectSchema = mongoose.Schema({
     required: true,
     select: false,
   },
-  members: [
-    {
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User',
-      },
-      access: {
-        required: true,
-        enum: ['user', 'admin'],
-        default: 'user',
-      },
-    },
-  ],
 });
 
 export const Project = mongoose.model('Project', projectSchema);

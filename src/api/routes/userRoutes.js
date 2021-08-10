@@ -3,7 +3,7 @@ import { getProfile, updateProfile } from '../controllers/userController.js';
 import { checkJwt } from '../middlewares/authMiddleware.js';
 import { attachUserMiddleware } from '../middlewares/attachUserMiddleware.js';
 
-export const userRoutes = Router();
-userRoutes.use(checkJwt);
-userRoutes.use(attachUserMiddleware);
-userRoutes.route('/profile').get(getProfile).patch(updateProfile);
+export const userRouter = Router();
+userRouter.use(checkJwt);
+userRouter.use(attachUserMiddleware);
+userRouter.route('/profile').get(getProfile).patch(updateProfile);
