@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 
 const taskSchema = mongoose.Schema(
   {
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Project',
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -42,6 +47,8 @@ const taskSchema = mongoose.Schema(
     },
   },
   {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
     timestamps: true,
   }
 );

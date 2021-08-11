@@ -1,17 +1,17 @@
 import mongoose from 'mongoose';
 
 const commentSchema = mongoose.Schema({
-  projectId: {
+  project: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'Project',
   },
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User',
   },
-  taskId: {
+  task: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'Task',

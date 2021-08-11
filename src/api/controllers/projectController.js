@@ -1,20 +1,33 @@
+import { Member } from '../../models/Member.js';
 import { Project } from '../../models/Project.js';
+import { AppError } from '../../utils/AppError.js';
 import { catchAsync } from '../../utils/catchAsync.js';
 
 export const getAllProjects = catchAsync(async (req, res) => {
   const { scope } = req.query;
-  const filterObj = {};
+  const filterObj = {
+    user: req.user.userId,
+  };
   if (scope === 'admin') {
-    filterObj.admin = req.user.userId;
+    filterObj.access = 'admin';
+  } else if (scope === 'shared') {
+    filterObj.access = 'member';
   }
-  const projects = await Project.find(filterObj);
-  return res.status(200).json({ status: 'success', projects });
+
+  // const projects = await Project.find(filterObj);
+  const members = await Member.find(filterObj).select('project access');
+  await Project.populate(members, 'project');
+
+  return res.status(200).json({ status: 'success', projects: members });
 });
 
-export const getProjectById = (req, res) => {
-  // console.log(req.params);
-  return res.status(200).json({ status: 'success' });
-};
+export const getProjectById = catchAsync(async (req, res, next) => {
+  const project = await Project.findById(req.params.id);
+  if (!project) {
+    return next(new AppError('No project found.', 404));
+  }
+  return res.status(200).json({ status: 'success', project });
+});
 
 export const createProject = catchAsync(async (req, res) => {
   const { title, description } = req.body;
@@ -23,9 +36,14 @@ export const createProject = catchAsync(async (req, res) => {
     description,
     admin: req.user.userId,
   });
-  // const member = await
-  return res.status(200).json({
+  const member = await Member.create({
+    project: newProject._id,
+    user: req.user.userId,
+    access: 'admin',
+  });
+  return res.status(201).json({
     status: 'success',
-    task: newProject,
+    project: newProject,
+    member,
   });
 });
