@@ -21,10 +21,30 @@ const userSchema = mongoose.Schema(
       select: false,
     },
     email_verified: {
-      type: String,
+      type: Boolean,
     },
     photo: {
       type: String,
+    },
+    tenant: {
+      type: String,
+      select: false,
+    },
+    transaction: {
+      type: mongoose.Schema.Types.Mixed,
+      select: false,
+    },
+    client_id: {
+      type: String,
+      select: false,
+    },
+    connection: {
+      type: String,
+      select: false,
+    },
+    request_language: {
+      type: String,
+      select: false,
     },
   },
   {

@@ -36,7 +36,8 @@ const taskSchema = mongoose.Schema(
       enum: ['backlog', 'todo', 'in_progress', 'done', 'canceled'],
     },
     assignee: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     startDate: {
       type: Date,

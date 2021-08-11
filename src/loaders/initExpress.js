@@ -26,7 +26,6 @@ export const initExpress = ({ app }) => {
   // Middleware that transforms the raw string of req.body into json
   app.use(express.json());
   // Load API routes
-  app.use(`${config.api.prefix}/tasks`, taskRouter);
   app.use(`${config.api.prefix}/projects`, projectRouter);
   app.use(`${config.api.prefix}/users`, userRouter);
 
