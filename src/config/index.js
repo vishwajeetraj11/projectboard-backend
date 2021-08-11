@@ -17,12 +17,12 @@ export const config = {
   port: parseInt(process.env.PORT, 10),
 
   /**
-   * That long string from mlab
+   * That long string from mongodb
    */
   databaseURL: process.env.MONGODB_URI,
 
   /**
-   * That long string from mlab
+   * MongoDB (DB) password
    */
   databasePassword: process.env.DB_PASSWORD,
 
