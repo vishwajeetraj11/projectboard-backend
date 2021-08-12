@@ -6,6 +6,7 @@ import { catchAsync } from '../../utils/catchAsync.js';
 
 export const addMemberToProject = catchAsync(async (req, res, next) => {
   const { projectId, id } = req.params;
+  // console.log({ currentUser: req.user.userId, userToAdd: id });
   const project = await Project.findById(projectId);
   if (!project) {
     next(
@@ -15,7 +16,11 @@ export const addMemberToProject = catchAsync(async (req, res, next) => {
       404
     );
   }
-  const memberAlreadyExist = await Member.findOne({ user: id });
+  const memberAlreadyExist = await Member.findOne({
+    user: id,
+    project: project._id,
+  });
+
   if (memberAlreadyExist) {
     return next(
       new AppError('This user is already a member in the project.', 409)

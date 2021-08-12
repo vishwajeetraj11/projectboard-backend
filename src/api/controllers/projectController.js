@@ -1,5 +1,6 @@
 import { Member } from '../../models/Member.js';
 import { Project } from '../../models/Project.js';
+import { User } from '../../models/User.js';
 import { AppError } from '../../utils/AppError.js';
 import { catchAsync } from '../../utils/catchAsync.js';
 
@@ -15,8 +16,9 @@ export const getAllProjects = catchAsync(async (req, res) => {
   }
 
   // const projects = await Project.find(filterObj);
-  const members = await Member.find(filterObj).select('project access');
+  const members = await Member.find(filterObj);
   await Project.populate(members, 'project');
+  await User.populate(members, 'user');
 
   return res.status(200).json({ status: 'success', projects: members });
 });
