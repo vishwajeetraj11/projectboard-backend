@@ -2,13 +2,14 @@ import { Member } from '../../models/Member.js';
 import { AppError } from '../../utils/AppError.js';
 import { catchAsync } from '../../utils/catchAsync.js';
 
-export const accessToProjectMiddleware = catchAsync(async (req, res, next) => {
+export const isAdminInProject = catchAsync(async (req, res, next) => {
   const { projectId } = req.params;
   const isAdmin = await Member.findOne({
     user: req.user.userId,
     project: projectId,
     access: 'admin',
   });
+  req.user.isAdmin = true;
   if (!isAdmin) {
     return next(
       new AppError(

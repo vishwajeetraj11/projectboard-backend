@@ -50,11 +50,17 @@ export const getAllMembersOfProject = catchAsync(async (req, res) => {
   res.status(200).json({ status: 'success', count: members.length, members });
 });
 
-export const deleteAmemberFromProject = catchAsync(async (req, res) => {
+export const deleteAmemberFromProject = catchAsync(async (req, res, next) => {
+  const member = await Member.findById(req.params.id);
+  if (member.access === 'admin') {
+    return next(
+      new AppError('An admin cannot remove itself from project.', 406)
+    );
+  }
   const deletedMember = await Member.findByIdAndDelete(req.params.id);
   if (!deletedMember) {
     return next(
-      new AppError("The ask you are trying to delete doesn't exist.", 404)
+      new AppError("The member you are trying to delete doesn't exist.", 404)
     );
   }
   res

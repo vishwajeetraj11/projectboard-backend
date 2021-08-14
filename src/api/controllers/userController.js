@@ -35,7 +35,6 @@ export const updateProfile = catchAsync(async (req, res, next) => {
 });
 
 export const getUsers = catchAsync(async (req, res, next) => {
-  console.log(req.query.keyword);
   const filter = req.query.keyword
     ? {
         $or: [
