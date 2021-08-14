@@ -49,3 +49,25 @@ export const createProject = catchAsync(async (req, res) => {
     member,
   });
 });
+
+export const updateProject = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { title, description } = req.body;
+  const newProject = await Project.findByIdAndUpdate(
+    id,
+    {
+      title,
+      description,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  return res.status(200).json({
+    status: 'success',
+    project: newProject,
+    member,
+  });
+});
