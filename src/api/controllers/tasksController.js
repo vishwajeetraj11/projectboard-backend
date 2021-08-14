@@ -66,7 +66,7 @@ export const deleteTask = catchAsync(async (req, res, next) => {
   const deletedTask = await Task.findByIdAndDelete(id);
   if (!deletedTask) {
     return next(
-      new AppError("The ask you are trying to delete doesn't exist.", 404)
+      new AppError("The Task you are trying to delete doesn't exist.", 404)
     );
   }
   res.status(204).json({
