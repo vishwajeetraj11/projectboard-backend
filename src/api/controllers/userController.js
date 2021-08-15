@@ -55,5 +55,8 @@ export const getUsers = catchAsync(async (req, res, next) => {
     : {};
   const count = await User.countDocuments(filter);
   const users = await User.find(filter);
+  if (!users.length) {
+    return next(new AppError('No Users Found', 404));
+  }
   res.status(200).json({ status: 'success', count, users });
 });
