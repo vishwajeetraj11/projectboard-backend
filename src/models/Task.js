@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 
 const taskSchema = mongoose.Schema(
   {
+    order: {
+      type: Number,
+      required: true,
+    },
     project: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -53,5 +57,8 @@ const taskSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+taskSchema.index({ order: 1 });
+taskSchema.index({ status: 1 });
 
 export const Task = mongoose.model('Task', taskSchema);

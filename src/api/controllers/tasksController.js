@@ -35,10 +35,16 @@ export const getTaskById = catchAsync(async (req, res, next) => {
 
 export const createTask = catchAsync(async (req, res) => {
   const { projectId } = req.params;
+
+  const tasksWithSameStatus = await Task.find({
+    status: req.body.status,
+    project: projectId,
+  });
   const newTask = await Task.create({
     ...req.body,
     author: req.user.memberId,
     project: projectId,
+    order: tasksWithSameStatus.length,
   });
   return res.status(200).json({
     status: 'success',
@@ -65,14 +71,93 @@ export const updateTask = catchAsync(async (req, res, next) => {
 
 export const deleteTask = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const deletedTask = await Task.findByIdAndDelete(id);
-  if (!deletedTask) {
+
+  const taskToDelete = await Task.findById(id);
+  if (!taskToDelete) {
     return next(
       new AppError("The Task you are trying to delete doesn't exist.", 404)
     );
   }
+  // db.collection.updateMany(filter, update, options)
+  await Task.updateMany(
+    {
+      status: taskToDelete.status,
+      project: taskToDelete.project,
+      order: {
+        $gt: taskToDelete.order,
+      },
+    },
+    {
+      $inc: { order: -1 },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  await taskToDelete.remove();
+
   res.status(204).json({
     status: 'success',
-    message: 'Member removed successfully',
+    message: 'Task removed successfully',
+  });
+});
+
+// Board Drag n Drop
+export const updateTaskStatus = catchAsync(async (req, res, next) => {
+  const { id, projectId } = req.params;
+  const { destinationStatus, sourceStatus, sourceIndex, destinationIndex } =
+    req.body;
+  // if ((!destinationStatus, !sourceStatus, !sourceIndex, !destinationIndex)) {
+  //   console.log(req.body);
+  //   return next(
+  //     new AppError('All requirements are not met to process this request.', 404)
+  //   );
+  // }
+
+  const task = await Task.findById(id);
+  if (!task) {
+    return next(new AppError('Task not found.', 404));
+  }
+  // const srcStatusTasks = await Task.updateMany(
+  await Task.updateMany(
+    {
+      status: sourceStatus,
+      project: projectId,
+      order: {
+        $gt: task.order,
+      },
+    },
+    {
+      $inc: { order: -1 },
+    }
+  );
+
+  // const destStatusTasks = await Task.updateMany(
+  await Task.updateMany(
+    {
+      status: destinationStatus,
+      project: projectId,
+      order: {
+        $gte: destinationIndex,
+      },
+    },
+    {
+      $inc: { order: 1 },
+    }
+  );
+
+  task.status = destinationStatus;
+  task.order = destinationIndex;
+  await task.save();
+
+  res.status(200).json({
+    status: 'success',
+    destinationStatus,
+    sourceStatus,
+    sourceIndex,
+    destinationIndex,
+    task,
   });
 });

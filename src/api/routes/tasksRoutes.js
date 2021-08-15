@@ -5,6 +5,7 @@ import {
   createTask,
   updateTask,
   deleteTask,
+  updateTaskStatus,
 } from '../controllers/tasksController.js';
 import { checkJwt } from '../middlewares/authMiddleware.js';
 import { authorizeMiddleware } from '../middlewares/authorizeMiddleware.js';
@@ -15,4 +16,5 @@ taskRouter.use(checkJwt);
 taskRouter.use(authorizeMiddleware);
 taskRouter.use(accessToProjectMiddleware);
 taskRouter.route('/').get(getAllTasks).post(createTask);
+taskRouter.route('/:id/update').patch(updateTaskStatus);
 taskRouter.route('/:id').get(getTaskById).patch(updateTask).delete(deleteTask);
