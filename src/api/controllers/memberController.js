@@ -45,7 +45,6 @@ export const getAllMembersOfProject = catchAsync(async (req, res) => {
   );
   await User.populate(members, {
     path: 'user',
-    select: '-transaction -tenant -client_id -request_language -connection',
   });
   res.status(200).json({ status: 'success', count: members.length, members });
 });

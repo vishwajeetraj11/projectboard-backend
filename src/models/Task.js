@@ -10,7 +10,7 @@ const taskSchema = mongoose.Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
+      ref: 'Member',
     },
     title: {
       type: String,
@@ -37,7 +37,7 @@ const taskSchema = mongoose.Schema(
     },
     assignee: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Member',
     },
     startDate: {
       type: Date,

@@ -13,5 +13,8 @@ export const accessToProjectMiddleware = catchAsync(async (req, res, next) => {
       new AppError('You do not have the access to this project.', 403)
     );
   }
+  console.log(isMember._id);
+  req.user.memberId = isMember._id;
+  console.log(req.user.memberId);
   next();
 });

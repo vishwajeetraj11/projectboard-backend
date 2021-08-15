@@ -11,10 +11,10 @@ export const getAllTasks = catchAsync(async (req, res, next) => {
     project: projectId,
   });
   await Member.populate(tasks, {
-    path: 'assignee',
+    path: 'assignee author',
   });
   await User.populate(tasks, {
-    path: 'author assignee.user',
+    path: 'author.user assignee.user',
   });
   return res.status(200).json({ status: 'success', tasks });
 });
@@ -37,7 +37,7 @@ export const createTask = catchAsync(async (req, res) => {
   const { projectId } = req.params;
   const newTask = await Task.create({
     ...req.body,
-    author: req.user.userId,
+    author: req.user.memberId,
     project: projectId,
   });
   return res.status(200).json({
