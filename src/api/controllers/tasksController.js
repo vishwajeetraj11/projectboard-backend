@@ -9,7 +9,7 @@ export const getAllTasks = catchAsync(async (req, res, next) => {
   const { projectId } = req.params;
   const tasks = await Task.find({
     project: projectId,
-  });
+  }).sort('order');
   await Member.populate(tasks, {
     path: 'assignee author',
   });
@@ -109,12 +109,6 @@ export const updateTaskStatus = catchAsync(async (req, res, next) => {
   const { id, projectId } = req.params;
   const { destinationStatus, sourceStatus, sourceIndex, destinationIndex } =
     req.body;
-  // if ((!destinationStatus, !sourceStatus, !sourceIndex, !destinationIndex)) {
-  //   console.log(req.body);
-  //   return next(
-  //     new AppError('All requirements are not met to process this request.', 404)
-  //   );
-  // }
 
   const task = await Task.findById(id);
   if (!task) {

@@ -58,7 +58,6 @@ const taskSchema = mongoose.Schema(
   }
 );
 
-taskSchema.index({ order: 1 });
-taskSchema.index({ status: 1 });
+taskSchema.index({ order: 1 }, { unique: true });
 
 export const Task = mongoose.model('Task', taskSchema);
