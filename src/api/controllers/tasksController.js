@@ -10,9 +10,11 @@ export const getAllTasks = catchAsync(async (req, res, next) => {
   const tasks = await Task.find({
     project: projectId,
   });
+  await Member.populate(tasks, {
+    path: 'assignee',
+  });
   await User.populate(tasks, {
-    path: 'author',
-    select: '-transaction -client_id -tenant -request_language',
+    path: 'author assignee.user',
   });
   return res.status(200).json({ status: 'success', tasks });
 });

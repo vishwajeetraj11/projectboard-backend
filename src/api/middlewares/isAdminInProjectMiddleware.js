@@ -12,10 +12,7 @@ export const isAdminInProject = catchAsync(async (req, res, next) => {
   req.user.isAdmin = true;
   if (!isAdmin) {
     return next(
-      new AppError(
-        'You need to be admin inorder to add members in project',
-        403
-      )
+      new AppError('You need to be admin inorder to perform this action.', 403)
     );
   }
   next();
