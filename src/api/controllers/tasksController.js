@@ -22,8 +22,11 @@ export const getAllTasks = catchAsync(async (req, res, next) => {
 export const getTaskById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const task = await Task.findById(id).populate({
-    path: 'author project',
-    Model: [User, Project],
+    path: 'author project assignee',
+    Model: [User, Project, Member],
+  });
+  await User.populate(task, {
+    path: 'assignee.user',
   });
   if (!task) {
     return next(
