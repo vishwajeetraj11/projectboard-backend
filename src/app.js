@@ -33,28 +33,25 @@ try {
     },
   });
 
-  let users = [];
   io.on('connection', (socket) => {
     console.log('connection established');
-    socket.on('user-loggedIn', ({ user }) => {
-      socket.join(user._id);
-      users.push(user._id);
-      console.log(users);
+    socket.on('member-loggedIn', ({ member }) => {
+      socket.join(member);
+      console.log(member);
     });
-    socket.on('join-session', (session) => socket.join(session));
+    // socket.on('join-session', (session) => socket.join(session));
     socket.on(
       'board_task_status_change',
-      ({ updatedTask, user: emitterUser }) => {
-        users.forEach((user) => {
-          if (emitterUser._id === user) return;
-          socket.in(user).emit('board_update', { updatedTask });
+      ({ member, updatedTask, memberIds }) => {
+        memberIds.forEach((memb) => {
+          if (memb === member) return;
+          socket.in(memb).emit('board_update', { updatedTask });
         });
       }
     );
 
     socket.on('disconnect', () => {
       console.log('End......');
-      users = [];
     });
   });
   io.on('connect_error', (err) => {

@@ -149,6 +149,16 @@ export const updateTaskStatus = catchAsync(async (req, res, next) => {
   task.order = destinationIndex;
   await task.save();
 
+  const sourceTasks = await Task.find({
+    project: projectId,
+    status: sourceStatus,
+  });
+
+  const destinationTasks = await Task.find({
+    project: projectId,
+    status: destinationStatus,
+  });
+
   res.status(200).json({
     status: 'success',
     destinationStatus,
@@ -156,5 +166,7 @@ export const updateTaskStatus = catchAsync(async (req, res, next) => {
     sourceIndex,
     destinationIndex,
     task,
+    sourceTasks,
+    destinationTasks,
   });
 });
