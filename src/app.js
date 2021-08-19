@@ -37,9 +37,7 @@ try {
     console.log('connection established');
     socket.on('member-loggedIn', ({ member }) => {
       socket.join(member);
-      console.log(member);
     });
-    // socket.on('join-session', (session) => socket.join(session));
     socket.on(
       'board_task_status_change',
       ({ member, updatedTask, memberIds }) => {

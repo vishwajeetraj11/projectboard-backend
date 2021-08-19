@@ -6,7 +6,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
     "start:prod": "SET NODE_ENV=production& nodemon src/app.js"
   },
   "dependencies": {
