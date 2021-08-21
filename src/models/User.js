@@ -10,7 +10,10 @@ const userSchema = mongoose.Schema(
     },
     username: {
       type: String,
-      unique: true,
+      index: {
+        unique: true,
+        partialFilterExpression: { username: { $type: 'string' } },
+      },
     },
     email: {
       type: String,
