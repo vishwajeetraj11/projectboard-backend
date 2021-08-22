@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { catchAsync } from './catchAsync.js';
 import { config } from '../config/index.js';
 
 export const getUserDetails = (token) =>

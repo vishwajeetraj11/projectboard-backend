@@ -70,8 +70,23 @@ export const createTask = catchAsync(async (req, res) => {
 
 export const updateTask = catchAsync(async (req, res, next) => {
   const { projectId, id } = req.params;
-  const { title, description } = req.body;
-  let history;
+  const {
+    title,
+    description,
+    status,
+    priority,
+    label,
+    startDate,
+    dueDate,
+    assignee,
+  } = req.body;
+  const history = {};
+
+  if (status) {
+    return next(
+      new AppError('You cannot update status through this route.', 403)
+    );
+  }
 
   const updatedTask = await Task.findByIdAndUpdate(id, req.body, {
     new: true,
@@ -79,21 +94,106 @@ export const updateTask = catchAsync(async (req, res, next) => {
   });
   if (!updatedTask) {
     return next(
-      new AppError("The ask you are trying to update doesn't exist.", 404)
+      new AppError("The Task you are trying to update doesn't exist.", 404)
     );
   }
-  if (title || description) {
-    history = await History.create({
+  if (title) {
+    history.title = await History.create({
       task: updatedTask._id,
       project: projectId,
       user: req.user.userId,
       action: 'update',
       extraDetails: {
-        taskTitle: updatedTask.title,
+        updatedField: 'title',
+        updatedValue: updatedTask.title,
+      },
+    });
+    await User.populate(history, 'user');
+  }
+
+  if (description) {
+    history.description = await History.create({
+      task: updatedTask._id,
+      project: projectId,
+      user: req.user.userId,
+      action: 'update',
+      extraDetails: {
+        updatedField: 'description',
+        updatedValue: updatedTask.description,
+      },
+    });
+    await User.populate(history, 'user');
+  }
+
+  if (priority) {
+    history.priority = await History.create({
+      task: updatedTask._id,
+      project: projectId,
+      user: req.user.userId,
+      action: 'update',
+      extraDetails: {
+        updatedField: 'priority',
+        updatedValue: updatedTask.priority,
+      },
+    });
+    await User.populate(history, 'user');
+  }
+
+  if (startDate) {
+    history.startDate = await History.create({
+      task: updatedTask._id,
+      project: projectId,
+      user: req.user.userId,
+      action: 'update',
+      extraDetails: {
+        updatedField: 'startDate',
+        updatedValue: updatedTask.startDate,
+      },
+    });
+    await User.populate(history, 'user');
+  }
+
+  if (dueDate) {
+    history.dueDate = await History.create({
+      task: updatedTask._id,
+      project: projectId,
+      user: req.user.userId,
+      action: 'update',
+      extraDetails: {
+        updatedField: 'dueDate',
+        updatedValue: updatedTask.dueDate,
+      },
+    });
+    await User.populate(history, 'user');
+  }
+
+  if (label) {
+    history.label = await History.create({
+      task: updatedTask._id,
+      project: projectId,
+      user: req.user.userId,
+      action: 'update',
+      extraDetails: {
+        updatedField: 'label',
+        updatedValue: updatedTask.label,
+      },
+    });
+    await User.populate(history, 'user');
+  }
+  if (assignee) {
+    await Member.populate(updatedTask, 'assignee');
+    history.assignee = await History.create({
+      task: updatedTask._id,
+      project: projectId,
+      user: req.user.userId,
+      action: 'assign',
+      extraDetails: {
+        user: updatedTask.assignee.user,
       },
     });
     await User.populate(history, 'user extraDetails.user');
   }
+
   res.status(200).json({
     status: 'success',
     updatedTask,
@@ -150,7 +250,7 @@ export const deleteTask = catchAsync(async (req, res, next) => {
 });
 
 // Board Drag n Drop
-export const updateTaskStatus = catchAsync(async (req, res, next) => {
+export const updateTaskStatusInBoard = catchAsync(async (req, res, next) => {
   const { id, projectId } = req.params;
   const { destinationStatus, sourceStatus, sourceIndex, destinationIndex } =
     req.body;
@@ -205,6 +305,74 @@ export const updateTaskStatus = catchAsync(async (req, res, next) => {
     task: task._id,
     project: projectId,
     user: req.user.userId,
+    action: 'update',
+    extraDetails: {
+      updatedField: 'status',
+      updatedValue: task.status,
+    },
+  });
+
+  await User.populate(history, 'user');
+
+  res.status(200).json({
+    status: 'success',
+    destinationStatus,
+    sourceStatus,
+    sourceIndex,
+    destinationIndex,
+    task,
+    sourceTasks,
+    destinationTasks,
+    history,
+  });
+});
+
+export const updateTaskStatus = catchAsync(async (req, res, next) => {
+  const { id, projectId } = req.params;
+  const { destinationStatus, sourceStatus } = req.body;
+
+  const task = await Task.findById(id);
+  if (!task) {
+    return next(new AppError('Task not found.', 404));
+  }
+  // const srcStatusTasks = await Task.updateMany(
+  await Task.updateMany(
+    {
+      status: sourceStatus,
+      project: projectId,
+      order: {
+        $gt: task.order,
+      },
+    },
+    {
+      $inc: { order: -1 },
+    }
+  );
+
+  // const destStatusTasks = await Task.updateMany(
+  const destinationLength = await Task.countDocuments({
+    status: destinationStatus,
+    project: projectId,
+  });
+
+  task.status = destinationStatus;
+  task.order = destinationLength - 1;
+  await task.save();
+
+  const sourceTasks = await Task.find({
+    project: projectId,
+    status: sourceStatus,
+  });
+
+  const destinationTasks = await Task.find({
+    project: projectId,
+    status: destinationStatus,
+  });
+
+  const history = await History.create({
+    task: task._id,
+    project: projectId,
+    user: req.user.userId,
     action: 'change',
     extraDetails: {
       changedField: 'status',
@@ -216,11 +384,6 @@ export const updateTaskStatus = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    destinationStatus,
-    sourceStatus,
-    sourceIndex,
-    destinationIndex,
-    task,
     sourceTasks,
     destinationTasks,
     history,
