@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { projectRouter, taskRouter, userRouter } from '../api/index.js';
+import { projectRouter, userRouter } from '../api/index.js';
 import { config } from '../config/index.js';
 import morgan from 'morgan';
 import { AppError } from '../utils/AppError.js';
 import { globalErrorHandler } from '../api/controllers/errorController.js';
 import helmet from 'helmet';
+import { historyRouter } from '../api/routes/historyRoutes.js';
 
 export const initExpress = ({ app }) => {
   app.use(helmet());
@@ -28,6 +29,7 @@ export const initExpress = ({ app }) => {
   // Load API routes
   app.use(`${config.api.prefix}/projects`, projectRouter);
   app.use(`${config.api.prefix}/users`, userRouter);
+  app.use(`${config.api.prefix}/history`, historyRouter);
 
   // all runs for all http methods
   app.all('*', (req, res, next) => {

@@ -4,6 +4,7 @@ import { AppError } from '../../utils/AppError.js';
 import { User } from '../../models/User.js';
 import { Member } from '../../models/Member.js';
 import { Project } from '../../models/Project.js';
+import { History } from '../../models/History.js';
 
 export const getAllTasks = catchAsync(async (req, res, next) => {
   const { projectId } = req.params;
@@ -49,14 +50,29 @@ export const createTask = catchAsync(async (req, res) => {
     project: projectId,
     order: tasksWithSameStatus.length,
   });
+
+  const history = await History.create({
+    task: newTask._id,
+    project: projectId,
+    user: req.user.userId,
+    action: 'create',
+    extraDetails: {
+      taskTitle: newTask.title,
+    },
+  });
+  await User.populate(history, 'user extraDetails.user');
   return res.status(200).json({
     status: 'success',
     task: newTask,
+    history,
   });
 });
 
 export const updateTask = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
+  const { projectId, id } = req.params;
+  const { title, description } = req.body;
+  let history;
+
   const updatedTask = await Task.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
@@ -66,14 +82,27 @@ export const updateTask = catchAsync(async (req, res, next) => {
       new AppError("The ask you are trying to update doesn't exist.", 404)
     );
   }
+  if (title || description) {
+    history = await History.create({
+      task: updatedTask._id,
+      project: projectId,
+      user: req.user.userId,
+      action: 'update',
+      extraDetails: {
+        taskTitle: updatedTask.title,
+      },
+    });
+    await User.populate(history, 'user extraDetails.user');
+  }
   res.status(200).json({
     status: 'success',
     updatedTask,
+    history,
   });
 });
 
 export const deleteTask = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
+  const { projectId, id } = req.params;
 
   const taskToDelete = await Task.findById(id);
   if (!taskToDelete) {
@@ -99,11 +128,24 @@ export const deleteTask = catchAsync(async (req, res, next) => {
     }
   );
 
+  const history = await History.create({
+    task: taskToDelete._id,
+    project: projectId,
+    user: req.user.userId,
+    action: 'delete',
+    extraDetails: {
+      taskTitle: taskToDelete.title,
+    },
+  });
+
+  await User.populate(history, 'user extraDetails.user');
+
   await taskToDelete.remove();
 
   res.status(204).json({
     status: 'success',
     message: 'Task removed successfully',
+    history,
   });
 });
 
@@ -159,6 +201,19 @@ export const updateTaskStatus = catchAsync(async (req, res, next) => {
     status: destinationStatus,
   });
 
+  const history = await History.create({
+    task: task._id,
+    project: projectId,
+    user: req.user.userId,
+    action: 'change',
+    extraDetails: {
+      changedField: 'status',
+      changedValue: task.status,
+    },
+  });
+
+  await User.populate(history, 'user extraDetails.user');
+
   res.status(200).json({
     status: 'success',
     destinationStatus,
@@ -168,5 +223,6 @@ export const updateTaskStatus = catchAsync(async (req, res, next) => {
     task,
     sourceTasks,
     destinationTasks,
+    history,
   });
 });

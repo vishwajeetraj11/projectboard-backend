@@ -1,4 +1,5 @@
 import { Member } from '../../models/Member.js';
+import { History } from '../../models/History.js';
 import { User } from '../../models/User.js';
 import { Project } from '../../models/Project.js';
 import { AppError } from '../../utils/AppError.js';
@@ -31,10 +32,24 @@ export const addMemberToProject = catchAsync(async (req, res, next) => {
     user: id,
     access: 'member',
   });
+
+  const history = await History.create({
+    project: project._id,
+    user: req.user.userId,
+    action: 'add-member',
+    extraDetails: {
+      member: member,
+      user: member.user,
+    },
+  });
+
+  await User.populate(history, 'user extraDetails.user');
+
   return res.status(201).json({
     status: 'success',
     project: project,
     member,
+    history,
   });
 });
 
@@ -50,19 +65,35 @@ export const getAllMembersOfProject = catchAsync(async (req, res) => {
 });
 
 export const deleteAmemberFromProject = catchAsync(async (req, res, next) => {
-  const member = await Member.findById(req.params.id);
+  const { projectId, id } = req.params;
+  const member = await Member.findById(id);
   if (member.access === 'admin') {
     return next(
       new AppError('An admin cannot remove itself from project.', 406)
     );
   }
+
+  const history = await History.create({
+    project: projectId,
+    user: req.user.userId,
+    action: 'remove-member',
+    extraDetails: {
+      member: member,
+      user: member.user,
+    },
+  });
+
+  await User.populate(history, 'user extraDetails.user');
+
   const deletedMember = await Member.findByIdAndDelete(req.params.id);
   if (!deletedMember) {
     return next(
       new AppError("The member you are trying to delete doesn't exist.", 404)
     );
   }
-  res
-    .status(204)
-    .json({ status: 'success', message: 'Member removed successfully' });
+  res.status(204).json({
+    status: 'success',
+    message: 'Member removed successfully',
+    history,
+  });
 });
