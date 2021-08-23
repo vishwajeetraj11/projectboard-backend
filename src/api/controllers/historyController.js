@@ -15,7 +15,7 @@ export const getProjectHistory = catchAsync(async (req, res, next) => {
 });
 
 export const getTaskHistory = catchAsync(async (req, res, next) => {
-  const { projectId } = req.params;
+  const { projectId, taskId } = req.params;
   const history = await History.find({
     project: projectId,
     task: taskId,
