@@ -48,6 +48,14 @@ try {
       }
     );
 
+    socket.on('delete_task_update', ({ member, taskId, memberIds }) => {
+      memberIds.forEach((memb) => {
+        if (memb === member) return;
+        socket.in(memb).emit('delete_update', { taskId });
+        console.log(memb);
+      });
+    });
+
     socket.on('disconnect', () => {
       console.log('End......');
     });

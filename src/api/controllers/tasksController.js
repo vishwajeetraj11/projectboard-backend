@@ -281,6 +281,11 @@ export const deleteTask = catchAsync(async (req, res, next) => {
     }
   );
 
+  // const sourceTasks = await Task.find({
+  //   status: taskToDelete.status,
+  //   project: projectId,
+  // });
+
   const history = await History.create({
     task: taskToDelete._id,
     project: projectId,
@@ -298,7 +303,8 @@ export const deleteTask = catchAsync(async (req, res, next) => {
   res.status(204).json({
     status: 'success',
     message: 'Task removed successfully',
-    history,
+    // sourceStatus: taskToDelete.status,
+    // sourceTasks,
   });
 });
 
