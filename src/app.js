@@ -52,7 +52,13 @@ try {
       memberIds.forEach((memb) => {
         if (memb === member) return;
         socket.in(memb).emit('delete_update', { taskId });
-        console.log(memb);
+      });
+    });
+
+    socket.on('create_task_update', ({ member, newTask, memberIds }) => {
+      memberIds.forEach((memb) => {
+        if (memb === member) return;
+        socket.in(memb).emit('create_update', { newTask });
       });
     });
 
