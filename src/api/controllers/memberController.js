@@ -27,6 +27,17 @@ export const addMemberToProject = catchAsync(async (req, res, next) => {
       new AppError('This user is already a member in the project.', 409)
     );
   }
+
+  const memberCount = await Member.countDocuments({
+    project: project._id,
+  });
+
+  if (memberCount >= 3) {
+    return next(
+      new AppError('One project can only have 3 members as of now.', 409)
+    );
+  }
+
   const member = await Member.create({
     project: project._id,
     user: id,
