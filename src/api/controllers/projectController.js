@@ -1,5 +1,7 @@
 import { Member } from '../../models/Member.js';
 import { Project } from '../../models/Project.js';
+import { Task } from '../../models/Task.js';
+import { History } from '../../models/History.js';
 import { User } from '../../models/User.js';
 import { AppError } from '../../utils/AppError.js';
 import { catchAsync } from '../../utils/catchAsync.js';
@@ -68,5 +70,26 @@ export const updateProject = catchAsync(async (req, res) => {
   return res.status(200).json({
     status: 'success',
     project: updatedProject,
+  });
+});
+
+export const deleteProject = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const project = await Project.findById(id);
+
+  if (!project) {
+    return next(
+      new AppError("The project you are trying to delete doesn't exist.", 404)
+    );
+  }
+
+  await Member.deleteMany({ project: project._id });
+  await History.deleteMany({ project: project._id });
+  await Task.deleteMany({ project: project._id });
+
+  await project.remove();
+  res.status(204).json({
+    status: 'success',
+    message: 'Project deleted Successfully',
   });
 });

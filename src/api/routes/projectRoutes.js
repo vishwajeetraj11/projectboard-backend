@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createProject,
+  deleteProject,
   getAllProjects,
   getProjectById,
   updateProject,
@@ -18,4 +19,8 @@ projectRouter.use(authorizeMiddleware);
 projectRouter.use('/:projectId/tasks', taskRouter);
 projectRouter.use('/:projectId/members', memberRouter);
 projectRouter.route('/').get(getAllProjects).post(createProject);
-projectRouter.route('/:id').get(getProjectById).patch(updateProject);
+projectRouter
+  .route('/:id')
+  .get(getProjectById)
+  .patch(updateProject)
+  .delete(deleteProject);
