@@ -16,8 +16,11 @@ export const initExpress = ({ app }) => {
   // The magic package that prevents frontend developers going nuts
   // Alternate description:
   // Enable Cross Origin Resource Sharing to all origins by default
-  app.use(cors());
-  // cors({ origin: clientOrigins })
+  if (process.env.NODE_ENV === 'production') {
+    app.use(cors({ origin: 'https://productboard-application.vercel.app/' }));
+  } else {
+    app.use(cors());
+  }
 
   // Development Logging
   if (process.env.NODE_ENV === 'development') {
