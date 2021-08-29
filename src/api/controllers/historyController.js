@@ -1,5 +1,4 @@
 import { catchAsync } from '../../utils/catchAsync.js';
-// import { AppError } from '../../utils/AppError.js';
 import { User } from '../../models/User.js';
 import { History } from '../../models/History.js';
 

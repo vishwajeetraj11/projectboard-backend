@@ -32,7 +32,7 @@ export const addMemberToProject = catchAsync(async (req, res, next) => {
     project: project._id,
   });
 
-  if (memberCount >= 3) {
+  if (memberCount >= 5) {
     return next(
       new AppError('One project can only have 3 members as of now.', 409)
     );
