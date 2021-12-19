@@ -25,7 +25,8 @@ Manage Members
 # Setting up Auth0  
 1. Login/Signup to Auth0  
 2. Create Application: ```Single Page Web Applications```  
-3. Inside The Application configure these urls  
+3. Create API (inside Auth0 ) to get API Audience (required for env).
+4. Inside The Application configure these urls  
    Allowed Callback URLs  ```http://localhost:<YOUR_FRONTEND_PORT>/```  
    Allowed Logout URLs  ```http://localhost:<YOUR_FRONTEND_PORT>/```  
    Allowed Web Origins  ```http://localhost:<YOUR_FRONTEND_PORT>/```  
