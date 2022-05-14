@@ -17,7 +17,7 @@ export const initExpress = ({ app }) => {
   // Alternate description:
   // Enable Cross Origin Resource Sharing to all origins by default
   if (process.env.NODE_ENV === 'production') {
-    app.use(cors({ origin: 'https://productboard-application.vercel.app' }));
+    app.use(cors({ origin: 'https://projectboard.vercel.app/' }));
   } else {
     app.use(cors());
   }
