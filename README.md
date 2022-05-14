@@ -12,13 +12,13 @@ Fronend: https://github.com/vishwajeetraj11/projectboard
 ## 💻 Screens
 Landing Page          |  Tasks Page
 :-------------------------:|:-------------------------:
-<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630149589220/goQ-okNCt.png" alt="Product Board Landing Page"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153282619/XUtel14cI.png" alt="Product Board Tasks Page">
+<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630149589220/goQ-okNCt.png" alt="Project Board Landing Page"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153282619/XUtel14cI.png" alt="Project Board Tasks Page">
 History Page       |  Task Detail
-<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153301739/U7064rsYj.png" alt="Product Board Task Detail Page"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153228545/T3fcevdSj.png" alt="Product Board Task Detail Page">
+<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153301739/U7064rsYj.png" alt="Project Board Task Detail Page"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153228545/T3fcevdSj.png" alt="Project Board Task Detail Page">
 Boards       |  All Projects
-<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153344984/m3cqsWGDT.png" alt="Product Board Boards Screen"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153955359/_YkSuXAIa.png" alt="Product Board All Projects Screen">
+<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153344984/m3cqsWGDT.png" alt="Project Board Boards Screen"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153955359/_YkSuXAIa.png" alt="Project Board All Projects Screen">
 Edit Project / Edit Profile        |  Add Members
-<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153390720/oMN0ES-gF.png" alt="Product Board Edit Screen"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153419566/dKBwRusw1.png" alt="ADD Members Screen">
+<img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153390720/oMN0ES-gF.png" alt="Project Board Edit Screen"> | <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153419566/dKBwRusw1.png" alt="ADD Members Screen">
 Manage Members
  <img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1630153308630/WU5JneMCO.png" alt="Manage Members Screen">
  
